@@ -1,0 +1,8 @@
+name: CartAttractor
+version: '1.0'
+main: dev.Fjc.cartAttractor.CartAttractor
+api-version: '1.21'
+prefix: Cart
+load: STARTUP
+authors: [ Fjc ]
+description: Attracts mobs towards minecarts
