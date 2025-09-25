@@ -6,3 +6,11 @@ prefix: Cart
 load: STARTUP
 authors: [ Fjc ]
 description: Attracts mobs towards minecarts
+
+softdepend:
+  - TrainCarts
+
+commands:
+  call-passengers:
+    description: Calls potential nearby passengers into the train you are in.
+

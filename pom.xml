@@ -6,7 +6,7 @@
 
     <groupId>dev.Fjc</groupId>
     <artifactId>CartAttractor</artifactId>
-    <version>1.0</version>
+    <version>1.06b</version>
     <packaging>jar</packaging>
 
     <name>CartAttractor</name>
@@ -55,14 +55,50 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>TrainCarts</id>
+            <url>https://github.com/bergerhealer/traincarts/</url>
+        </repository>
+        <repository>
+            <id>modrinth</id>
+            <url>https://repo.rinth.dev/maven/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
             <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.bergerkiller.bukkit</groupId>
+            <artifactId>TrainCarts</artifactId>
+            <version>1.21.4-v1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/Charl/3D Objects/local depend/TrainCarts-1.21.5-v1-1626(1).jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.bergerkiller.bukkit</groupId>
+            <artifactId>BKCommonLib-bom</artifactId>
+            <version>1.21.4-v1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/Charl/3D Objects/local depend/BKCommonLib-1.21.5-v1-1864(1).jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
