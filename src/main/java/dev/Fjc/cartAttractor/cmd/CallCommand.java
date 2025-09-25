@@ -4,6 +4,7 @@ import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
 import com.bergerkiller.bukkit.tc.controller.MinecartMember;
 import com.bergerkiller.bukkit.tc.controller.MinecartMemberStore;
 import dev.Fjc.cartAttractor.CartAttractor;
+import dev.Fjc.cartAttractor.builder.FileBuilder;
 import dev.Fjc.cartAttractor.builder.PathManager;
 import dev.Fjc.cartAttractor.listener.Attractor;
 import org.bukkit.Location;
@@ -19,12 +20,15 @@ public class CallCommand implements CommandExecutor {
 
     private final CartAttractor plugin;
 
+    private final FileBuilder fileBuilder;
+
     private final PathManager manager;
 
     private final Attractor listener;
 
-    public CallCommand(CartAttractor plugin) {
+    public CallCommand(@NotNull CartAttractor plugin) {
         this.plugin = plugin;
+        this.fileBuilder = this.plugin.getFileBuilder();
         this.manager = new PathManager(this.plugin);
         this.listener = new Attractor(this.plugin);
     }
@@ -54,7 +58,7 @@ public class CallCommand implements CommandExecutor {
                 player.sendMessage("The location is null. It either no longer exists or was modified somehow.");
                 return false;
             }
-            for (Mob entity : Attractor.getNearbyEntities(player.getLocation(), 30)) {
+            for (Mob entity : Attractor.getNearbyEntities(player.getLocation(), this.fileBuilder.getRadius())) {
 
                 if (listener.getLastAvailableCar(group) == null) continue;
 

@@ -20,7 +20,12 @@ public class NoInvisGoal implements Goal<@NotNull WanderingTrader> {
 
     private final WanderingTrader mob;
 
-    public NoInvisGoal(@NotNull CartAttractor plugin, WanderingTrader entity) {
+    /**
+     * Specifically targets Wandering Traders, preventing them from becoming invisible while this goal is active.
+     * @param plugin The plugin handling this WanderingTrader
+     * @param entity The Mob being targeted. Must be an instance of WanderingTrader
+     */
+    public NoInvisGoal(@NotNull CartAttractor plugin, @NotNull WanderingTrader entity) {
         this.plugin = plugin;
         this.key = new NamespacedKey(this.plugin, "noinvisgoal");
         this.mob = entity;

@@ -1,0 +1,8 @@
+#This is the main configuration file for CartAttractor.
+#
+# Should the plugin run? Enter true or false.
+isEnabled: true
+
+# What should the radius be when the plugin looks for mobs to bring to the train? Enter an integer.
+radius: 24
+ejectChance: 0.14

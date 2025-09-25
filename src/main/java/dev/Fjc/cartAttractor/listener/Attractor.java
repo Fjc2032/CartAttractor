@@ -6,6 +6,7 @@ import com.bergerkiller.bukkit.tc.controller.MinecartMember;
 import com.bergerkiller.bukkit.tc.controller.MinecartMemberStore;
 import com.bergerkiller.bukkit.tc.events.SignActionEvent;
 import dev.Fjc.cartAttractor.CartAttractor;
+import dev.Fjc.cartAttractor.builder.FileBuilder;
 import dev.Fjc.cartAttractor.builder.PathManager;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
@@ -23,19 +24,27 @@ public class Attractor implements Listener {
 
     private final PathManager pathManager;
 
+    private final FileBuilder fileBuilder;
+
+    private final boolean isEnabled;
+
     public Attractor(@NotNull CartAttractor plugin) {
         this.plugin = plugin;
         this.pathManager = new PathManager(this.plugin);
+        this.fileBuilder = this.plugin.getFileBuilder();
+        this.isEnabled = this.fileBuilder.isEnabled();
     }
 
     @EventHandler
     public void onCartNearbyNoPassenger(SignActionEvent event) {
         MinecartGroup group = event.getGroup();
+        if (!isEnabled) return;
         if (!event.isType("station")) return;
+        if (group.isMoving()) return;
 
         try {
 
-            for (Mob entity : getNearbyEntities(event.getLocation())) {
+            for (Mob entity : getNearbyEntities(event.getLocation(), 30)) {
 
                 if (getLastAvailableCar(group, entity) == null) continue;
 
@@ -50,12 +59,14 @@ public class Attractor implements Listener {
     @EventHandler
     public void onCartNearby(SignActionEvent event) {
         MinecartGroup group = event.getGroup();
+        if (!isEnabled) return;
         if (!event.isType("station")) return;
         if (getMembersInTrain(group).isEmpty()) return;
+        if (group.isMoving()) return;
 
         try {
 
-            for (Mob entity : getNearbyEntities(event.getLocation(), 24)) {
+            for (Mob entity : getNearbyEntities(event.getLocation())) {
 
                 if (getLastAvailableCar(group, entity) == null) continue;
 
@@ -70,6 +81,7 @@ public class Attractor implements Listener {
     @EventHandler
     public void onTrainEnter(VehicleEnterEvent event) {
         MinecartMember<?> vehicle = MinecartMemberStore.getFromEntity(event.getVehicle());
+        if (!isEnabled) return;
         if (vehicle == null) return;
         if (!(event.getEntered() instanceof LivingEntity entity)) return;
 
@@ -87,11 +99,11 @@ public class Attractor implements Listener {
         }
         return targets;
     }
-    private static List<? extends Mob> getNearbyEntities(Location location) {
-        return getNearbyEntities(location, 16);
+    private List<? extends Mob> getNearbyEntities(Location location) {
+        return getNearbyEntities(location, this.fileBuilder.getRadius());
     }
 
-    public static List<? extends Mob> getNearbyEntities(Location location, double radius) {
+    public static List<? extends Mob> getNearbyEntities(Location location, int radius) {
         return location.getWorld().getNearbyEntities(location, radius, radius, radius).stream()
                 .filter(Mob.class::isInstance)
                 .map(obj -> (Mob) obj)

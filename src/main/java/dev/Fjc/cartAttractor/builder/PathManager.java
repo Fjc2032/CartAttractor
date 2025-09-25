@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.WanderingTrader;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PathManager {
@@ -21,7 +22,7 @@ public class PathManager {
      * The main manager that handles all Mob path routes
      * @param plugin The plugin hosting the manager.
      */
-    public PathManager(CartAttractor plugin) {
+    public PathManager(@NotNull CartAttractor plugin) {
         this.plugin = plugin;
     }
 
