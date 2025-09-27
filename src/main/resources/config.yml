@@ -5,4 +5,4 @@ isEnabled: true
 
 # What should the radius be when the plugin looks for mobs to bring to the train? Enter an integer.
 radius: 24
-ejectChance: 0.14
+ejectChance: 0.07

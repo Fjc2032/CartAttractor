@@ -13,4 +13,6 @@ softdepend:
 commands:
   call-passengers:
     description: Calls potential nearby passengers into the train you are in.
+  cartattractor-reload:
+    description: Reloads the plugin.
 

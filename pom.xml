@@ -6,7 +6,7 @@
 
     <groupId>dev.Fjc</groupId>
     <artifactId>CartAttractor</artifactId>
-    <version>1.07b</version>
+    <version>1.11b</version>
     <packaging>jar</packaging>
 
     <name>CartAttractor</name>

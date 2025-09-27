@@ -4,6 +4,8 @@ import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import dev.Fjc.cartAttractor.CartAttractor;
+import dev.Fjc.cartAttractor.builder.FileBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.WanderingTrader;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +15,8 @@ import java.util.EnumSet;
 public class NoInvisGoal implements Goal<@NotNull WanderingTrader> {
 
     private final CartAttractor plugin;
+
+    private final FileBuilder fileBuilder;
 
     private final NamespacedKey key;
 
@@ -27,6 +31,7 @@ public class NoInvisGoal implements Goal<@NotNull WanderingTrader> {
      */
     public NoInvisGoal(@NotNull CartAttractor plugin, @NotNull WanderingTrader entity) {
         this.plugin = plugin;
+        this.fileBuilder = this.plugin.getFileBuilder();
         this.key = new NamespacedKey(this.plugin, "noinvisgoal");
         this.mob = entity;
         goalkey = GoalKey.of(WanderingTrader.class, key);
@@ -34,7 +39,7 @@ public class NoInvisGoal implements Goal<@NotNull WanderingTrader> {
 
     @Override
     public boolean shouldActivate() {
-        return true;
+        return this.fileBuilder.isEnabled();
     }
 
     @Override
@@ -52,6 +57,7 @@ public class NoInvisGoal implements Goal<@NotNull WanderingTrader> {
     public void stop() {
         this.mob.setCanDrinkPotion(true);
         this.mob.setCanDrinkMilk(true);
+        Bukkit.getMobGoals().removeGoal(this.mob, this);
     }
 
     @Override
@@ -72,7 +78,7 @@ public class NoInvisGoal implements Goal<@NotNull WanderingTrader> {
     public NamespacedKey getNamespacedKey() {
         return this.key;
     }
-    public WanderingTrader getMob() {
+    public @NotNull WanderingTrader getMob() {
         return this.mob;
     }
 }

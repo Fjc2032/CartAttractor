@@ -25,11 +25,8 @@ public class Reload implements CommandExecutor {
             return false;
         }
         if (args.length == 0) {
-            if (this.fileBuilder.reload()) sender.sendMessage("Reload success.");
-            else {
-                sender.sendMessage("An unexpected error occurred while attempting to run this command.");
-                return false;
-            }
+            this.fileBuilder.reload();
+            return true;
         }
         return true;
     }

@@ -7,10 +7,13 @@ import dev.Fjc.cartAttractor.builder.goals.DocileGoal;
 import dev.Fjc.cartAttractor.builder.goals.NoInvisGoal;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.WanderingTrader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class PathManager {
 
@@ -63,10 +66,23 @@ public class PathManager {
 
         if (!pathfinder.findPath(location).canReachFinalPoint() || pathfinder.findPath(location) == null) {
             if (versatile) entity.teleport(location);
-            else pathfinder.moveTo(location);
+            else {
+                pathfinder.moveTo(location);
+                return pathfinder.findPath(location);
+            }
         }
 
-        return pathfinder.findPath(location);
+        return pathfinder.findPath(nonNullLocation(entity.getWorld()));
+    }
+
+    public @Nullable Pathfinder.PathResult buildRandomPath(Mob entity, List<Location> points) {
+        Pathfinder.PathResult result;
+        for (Location location : points) {
+            result = entity.getPathfinder().findPath(location);
+            if (result != null) return result;
+        }
+
+        return null;
     }
 
     /**
@@ -81,6 +97,10 @@ public class PathManager {
 
         if (entity instanceof WanderingTrader trader) goals.addGoal(trader, 1, new NoInvisGoal(this.plugin, trader));
 
+    }
+
+    private @NotNull Location nonNullLocation(World world) {
+        return new Location(world, 0, 0, 0);
     }
 
     private void teleport(Mob entity, Location location, long delay) {

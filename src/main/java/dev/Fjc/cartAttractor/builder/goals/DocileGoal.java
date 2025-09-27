@@ -4,9 +4,11 @@ import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import dev.Fjc.cartAttractor.CartAttractor;
+import dev.Fjc.cartAttractor.builder.FileBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
+import org.bukkit.entity.Sittable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
@@ -14,6 +16,9 @@ import java.util.EnumSet;
 public class DocileGoal implements Goal<@NotNull Mob> {
 
     private final CartAttractor plugin;
+
+    private final FileBuilder fileBuilder;
+
     private final NamespacedKey key;
 
     private static GoalKey<@NotNull Mob> goalKey;
@@ -27,6 +32,7 @@ public class DocileGoal implements Goal<@NotNull Mob> {
      */
     public DocileGoal(@NotNull CartAttractor plugin, @NotNull Mob entity) {
         this.plugin = plugin;
+        this.fileBuilder = this.plugin.getFileBuilder();
         this.mob = entity;
 
         this.key = new NamespacedKey(this.plugin, "docilegoal");
@@ -35,12 +41,13 @@ public class DocileGoal implements Goal<@NotNull Mob> {
 
     @Override
     public boolean shouldActivate() {
-        return true;
+        return this.fileBuilder.isEnabled();
     }
 
     @Override
     public void start() {
         this.mob.setAggressive(false);
+        if (this.mob instanceof Sittable sittable) sittable.setSitting(false);
     }
 
     @Override
@@ -65,5 +72,13 @@ public class DocileGoal implements Goal<@NotNull Mob> {
 
     public NamespacedKey getNamespacedKey() {
         return this.key;
+    }
+
+    public boolean canSit() {
+        return this.mob instanceof Sittable;
+    }
+
+    public @NotNull Mob getMob() {
+        return this.mob;
     }
 }

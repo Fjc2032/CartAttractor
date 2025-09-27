@@ -1,6 +1,5 @@
 package dev.Fjc.cartAttractor.listener;
 
-import com.bergerkiller.bukkit.tc.TrainCarts;
 import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
 import com.bergerkiller.bukkit.tc.controller.MinecartMember;
 import com.bergerkiller.bukkit.tc.controller.MinecartMemberStore;
@@ -45,6 +44,7 @@ public class Attractor implements Listener {
         try {
 
             for (Mob entity : getNearbyEntities(event.getLocation(), 30)) {
+                if (entity.isInWater() || entity.isInsideVehicle()) continue;
 
                 if (getLastAvailableCar(group, entity) == null) continue;
 
@@ -67,11 +67,12 @@ public class Attractor implements Listener {
         try {
 
             for (Mob entity : getNearbyEntities(event.getLocation())) {
+                if (entity.isInWater() || entity.isInsideVehicle()) continue;
 
                 if (getLastAvailableCar(group, entity) == null) continue;
 
                 if (entity.getLocation().distanceSquared(getLastAvailableCar(group, entity)) <= 0.15) continue;
-                entity.getPathfinder().moveTo(getLastAvailableCar(group, entity));
+
                 if (pathManager.buildPath(getLastAvailableCar(group), entity, true) != null)
                     pathManager.buildPath(getLastAvailableCar(group), entity, true);
             }
@@ -106,6 +107,8 @@ public class Attractor implements Listener {
     public static List<? extends Mob> getNearbyEntities(Location location, int radius) {
         return location.getWorld().getNearbyEntities(location, radius, radius, radius).stream()
                 .filter(Mob.class::isInstance)
+                .filter(entity -> !entity.isInWater())
+                .filter(entity -> !entity.isInsideVehicle())
                 .map(obj -> (Mob) obj)
                 .toList();
     }

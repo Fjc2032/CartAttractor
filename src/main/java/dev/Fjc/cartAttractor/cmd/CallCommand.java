@@ -16,6 +16,8 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class CallCommand implements CommandExecutor {
 
     private final CartAttractor plugin;
@@ -60,11 +62,14 @@ public class CallCommand implements CommandExecutor {
             }
             for (Mob entity : Attractor.getNearbyEntities(player.getLocation(), this.fileBuilder.getRadius())) {
 
+                if (entity.isInsideVehicle()) continue;
+
                 if (listener.getLastAvailableCar(group) == null) continue;
 
                 if (entity.getLocation().distanceSquared(listener.getLastAvailableCar(group, entity)) <= 0.15) continue;
-                if (manager.buildPath(listener.getLastAvailableCar(group), entity, true) != null)
+                if (Objects.nonNull(manager.buildPath(listener.getLastAvailableCar(group), entity, true)))
                     manager.buildPath(listener.getLastAvailableCar(group), entity, true);
+                else entity.teleport(listener.getLastAvailableCar(group, entity));
             }
             sender.sendMessage("Attempting to call potential nearby passengers...");
             return true;
