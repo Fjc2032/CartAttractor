@@ -1,7 +1,9 @@
 package dev.Fjc.cartAttractor;
 
 import dev.Fjc.cartAttractor.builder.FileBuilder;
+import dev.Fjc.cartAttractor.builder.goals.DocileGoal;
 import dev.Fjc.cartAttractor.cmd.CallCommand;
+import dev.Fjc.cartAttractor.cmd.NearbyMobsCommand;
 import dev.Fjc.cartAttractor.cmd.Reload;
 import dev.Fjc.cartAttractor.listener.Attractor;
 import dev.Fjc.cartAttractor.listener.Ejector;
@@ -50,8 +52,10 @@ public final class CartAttractor extends JavaPlugin {
         logger.info("Attempting to register all events...");
         setListener(new Attractor(this));
         setListener(new Ejector(this));
+        setListener(new DocileGoal(this));
         setExecutor("call-passengers", new CallCommand(this));
         setExecutor("cartattractor-reload", new Reload(this));
+        setExecutor("getnearbymobs", new NearbyMobsCommand(this));
 
         logger.info("Everything is OK.");
     }

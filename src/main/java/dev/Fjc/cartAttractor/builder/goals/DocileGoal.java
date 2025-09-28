@@ -7,13 +7,18 @@ import dev.Fjc.cartAttractor.CartAttractor;
 import dev.Fjc.cartAttractor.builder.FileBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Sittable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-public class DocileGoal implements Goal<@NotNull Mob> {
+public class DocileGoal implements Goal<@NotNull Mob>, Listener {
 
     private final CartAttractor plugin;
 
@@ -37,6 +42,13 @@ public class DocileGoal implements Goal<@NotNull Mob> {
 
         this.key = new NamespacedKey(this.plugin, "docilegoal");
         goalKey = GoalKey.of(Mob.class, key);
+    }
+
+    public DocileGoal(@NotNull CartAttractor plugin) {
+        this.plugin = plugin;
+        this.fileBuilder = this.plugin.getFileBuilder();
+        this.key = getNamespacedKey();
+        this.mob = getMob();
     }
 
     @Override
@@ -80,5 +92,13 @@ public class DocileGoal implements Goal<@NotNull Mob> {
 
     public @NotNull Mob getMob() {
         return this.mob;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void explosionHandler(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Mob)) return;
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION ||
+                event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) event.setCancelled(true);
     }
 }

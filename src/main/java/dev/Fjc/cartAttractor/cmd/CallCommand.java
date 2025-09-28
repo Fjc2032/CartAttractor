@@ -55,7 +55,7 @@ public class CallCommand implements CommandExecutor {
 
             MinecartMember<?> initial = MinecartMemberStore.getFromEntity(player.getVehicle());
             MinecartGroup group = initial.getGroup();
-            Location target = listener.getLastAvailableCar(group);
+            Location target = listener.getLastAvailableCarLocation(group);
 
             if (target == null) {
                 player.sendMessage("The location is null. It either no longer exists or was modified somehow.");
@@ -63,22 +63,26 @@ public class CallCommand implements CommandExecutor {
             }
             for (Mob entity : Attractor.getNearbyEntities(player.getLocation(), this.fileBuilder.getRadius())) {
                 Pathfinder.PathResult result = manager.buildPath(
-                        listener.getLastAvailableCar(group),
+                        listener.getLastAvailableCarLocation(group),
                         entity,
                         true
                 );
+                MinecartMember<?> object = listener.getLastAvailableCar(group);
+                if (object == null) continue;
 
                 if (result == null) {
-                    player.sendMessage("The path specified does not exist.");
-                    return false;
+                    player.sendMessage("The mob path is null, attempting to continue anyway...");
                 }
 
-                if (listener.getLastAvailableCar(group) == null) continue;
+                if (listener.getLastAvailableCarLocation(group) == null) continue;
 
-                if (entity.getLocation().distanceSquared(listener.getLastAvailableCar(group, entity)) <= 0.15) continue;
-                if (Objects.nonNull(manager.buildPath(listener.getLastAvailableCar(group), entity, true)))
-                    manager.buildPath(listener.getLastAvailableCar(group), entity, true);
-                else entity.teleport(listener.getLastAvailableCar(group, entity));
+                if (entity.getLocation().distanceSquared(listener.getLastAvailableCarLocation(group, entity)) <= 0.15) continue;
+                if (Objects.nonNull(manager.buildPath(listener.getLastAvailableCarLocation(group), entity, true)))
+                    manager.buildPath(listener.getLastAvailableCarLocation(group), entity, true);
+                else {
+                    entity.teleport(listener.getLastAvailableCarLocation(group, entity));
+                    listener.enterVehicle(entity, object);
+                }
             }
             sender.sendMessage("Attempting to call potential nearby passengers...");
             return true;

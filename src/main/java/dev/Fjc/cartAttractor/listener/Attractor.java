@@ -44,14 +44,11 @@ public class Attractor implements Listener {
         try {
 
             for (Mob entity : getNearbyEntities(event.getLocation(), 30)) {
-                if (entity.isInWater() || entity.isInsideVehicle()) continue;
+                if (getLastAvailableCarLocation(group, entity) == null) continue;
 
-                if (getLastAvailableCar(group, entity) == null) continue;
+                if (entity.getLocation().distanceSquared(getLastAvailableCarLocation(group, entity)) <= 0.15) continue;
 
-                if (entity.getLocation().distanceSquared(getLastAvailableCar(group, entity)) <= 0.15) continue;
-
-                if (pathManager.buildPath(getLastAvailableCar(group), entity, true) != null)
-                    pathManager.buildPath(getLastAvailableCar(group), entity, true);
+                pathManager.buildPath(getLastAvailableCarLocation(group), entity, true);
             }
         } catch (NullPointerException ignored) {}
     }
@@ -69,12 +66,12 @@ public class Attractor implements Listener {
             for (Mob entity : getNearbyEntities(event.getLocation())) {
                 if (entity.isInWater() || entity.isInsideVehicle()) continue;
 
-                if (getLastAvailableCar(group, entity) == null) continue;
+                if (getLastAvailableCarLocation(group, entity) == null) continue;
 
-                if (entity.getLocation().distanceSquared(getLastAvailableCar(group, entity)) <= 0.15) continue;
+                if (entity.getLocation().distanceSquared(getLastAvailableCarLocation(group, entity)) <= 0.15) continue;
 
-                if (pathManager.buildPath(getLastAvailableCar(group), entity, true) != null)
-                    pathManager.buildPath(getLastAvailableCar(group), entity, true);
+                pathManager.buildPath(getLastAvailableCarLocation(group), entity, true);
+                enterVehicle(entity, getLastAvailableCar(group));
             }
         } catch (NullPointerException ignored) {}
     }
@@ -104,16 +101,26 @@ public class Attractor implements Listener {
         return getNearbyEntities(location, this.fileBuilder.getRadius());
     }
 
+    /**
+     * Gets a list of all nearby entities of the specified radius.
+     * @param location The starting Location
+     * @param radius the radius
+     * @return A list of all nearby entities, which are all wildcards of Mob.
+     */
     public static List<? extends Mob> getNearbyEntities(Location location, int radius) {
         return location.getWorld().getNearbyEntities(location, radius, radius, radius).stream()
                 .filter(Mob.class::isInstance)
-                .filter(entity -> !entity.isInWater())
-                .filter(entity -> !entity.isInsideVehicle())
                 .map(obj -> (Mob) obj)
                 .toList();
     }
 
-    public @Nullable Location getLastAvailableCar(MinecartGroup group) {
+    /**
+     * Gets the location of the furthest back MinecartMember in a MinecartGroup, or
+     * null if there are no members available.
+     * @param group The MinecartGroup
+     * @return The Location, or null if there are no valid MinecartMembers.
+     */
+    public @Nullable Location getLastAvailableCarLocation(MinecartGroup group) {
         for (MinecartMember<?> member : group.reversed()) {
             if (member.getEntity().getPassengers().isEmpty()) return member.getEntity().getLocation();
         }
@@ -121,11 +128,42 @@ public class Attractor implements Listener {
         return null;
     }
 
-    public Location getLastAvailableCar(MinecartGroup group, Mob target) {
+    /**
+     * Gets the location of the furthest back MinecartMember in a MinecartGroup.
+     * If there are no MinecartMember instances available, this will return the
+     * location of the Mob.
+     * @param group The MinecartGroup
+     * @param target The Mob
+     * @return The Location of the MinecartMember, or the location of the Mob specified, or null if neither exist.
+     */
+    public Location getLastAvailableCarLocation(MinecartGroup group, Mob target) {
         for (MinecartMember<?> member : group.reversed()) {
             if (member.getEntity().getPassengers().isEmpty()) return member.getEntity().getLocation();
         }
 
         return target.getLocation();
+    }
+
+    /**
+     * Gets the furthest back MinecartMember in a MinecartGroup, or null if there are no members available.
+     * @param group The MinecartGroup
+     * @return The MinecartMember, or null if none is available.
+     */
+    public @Nullable MinecartMember<?> getLastAvailableCar(MinecartGroup group) {
+        for (MinecartMember<?> member : group.reversed()) {
+            if (member.getEntity().getPassengers().isEmpty()) return member;
+        }
+
+        return null;
+    }
+
+    /**
+     * Forces a Mob into a MinecartMember, if there is one available. More reliable than collisions.
+     * @param entity The Mob being put into the MinecartMember
+     * @param vehicle The MinecartMember the Mob will enter
+     * @apiNote Be careful when using this. Without additional checks, it will pull ANY mob in radius.
+     */
+    public void enterVehicle(Mob entity, MinecartMember<?> vehicle) {
+       if (!vehicle.getEntity().hasPassenger()) vehicle.addPassengerForced(entity);
     }
 }

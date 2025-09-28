@@ -15,4 +15,6 @@ commands:
     description: Calls potential nearby passengers into the train you are in.
   cartattractor-reload:
     description: Reloads the plugin.
+  getnearbymobs:
+    description: Gets mobs that are nearby (instances of PaperMC's Mob)
 
