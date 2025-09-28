@@ -3,6 +3,7 @@ package dev.Fjc.cartAttractor;
 import dev.Fjc.cartAttractor.builder.FileBuilder;
 import dev.Fjc.cartAttractor.builder.goals.DocileGoal;
 import dev.Fjc.cartAttractor.cmd.CallCommand;
+import dev.Fjc.cartAttractor.cmd.GetEjectCommand;
 import dev.Fjc.cartAttractor.cmd.NearbyMobsCommand;
 import dev.Fjc.cartAttractor.cmd.Reload;
 import dev.Fjc.cartAttractor.listener.Attractor;
@@ -56,6 +57,7 @@ public final class CartAttractor extends JavaPlugin {
         setExecutor("call-passengers", new CallCommand(this));
         setExecutor("cartattractor-reload", new Reload(this));
         setExecutor("getnearbymobs", new NearbyMobsCommand(this));
+        setExecutor("getejectchance", new GetEjectCommand(this));
 
         logger.info("Everything is OK.");
     }
