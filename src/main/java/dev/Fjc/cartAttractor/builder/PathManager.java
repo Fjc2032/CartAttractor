@@ -39,7 +39,6 @@ public class PathManager {
         this.pathfinder = entity.getPathfinder();
         pathfinder.setCanOpenDoors(true);
         pathfinder.setCanPassDoors(true);
-        pathfinder.setCanFloat(true);
         applyGoals(entity);
 
         pathfinder.moveTo(location);
@@ -55,21 +54,21 @@ public class PathManager {
      * @param versatile Whether the Mob can use unorthodox methods to reach its location
      * @return The path, or null if the path is unreachable
      */
-    public @Nullable Pathfinder.PathResult buildPath(Location location, Mob entity, boolean versatile) {
+    public @Nullable Pathfinder.PathResult buildPath(@Nullable Location location, Mob entity, boolean versatile) {
         this.pathfinder = entity.getPathfinder();
         pathfinder.setCanOpenDoors(versatile);
         pathfinder.setCanPassDoors(versatile);
-        pathfinder.setCanFloat(versatile);
         applyGoals(entity);
 
         if (entity.isInsideVehicle()) return null;
 
-        if (!pathfinder.findPath(location).canReachFinalPoint() || pathfinder.findPath(location) == null) {
-            if (versatile) entity.teleport(location);
-            else {
-                pathfinder.moveTo(location);
-                return pathfinder.findPath(location);
-            }
+        if (location == null) return pathfinder.findPath(nonNullLocation(entity.getWorld()));
+
+        if (pathfinder.findPath(location) == null) if (versatile) entity.teleport(location);
+        else {
+            pathfinder.moveTo(location);
+            return pathfinder.findPath(location);
+
         }
 
         return pathfinder.findPath(nonNullLocation(entity.getWorld()));

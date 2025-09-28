@@ -3,6 +3,7 @@ package dev.Fjc.cartAttractor.cmd;
 import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
 import com.bergerkiller.bukkit.tc.controller.MinecartMember;
 import com.bergerkiller.bukkit.tc.controller.MinecartMemberStore;
+import com.destroystokyo.paper.entity.Pathfinder;
 import dev.Fjc.cartAttractor.CartAttractor;
 import dev.Fjc.cartAttractor.builder.FileBuilder;
 import dev.Fjc.cartAttractor.builder.PathManager;
@@ -61,8 +62,16 @@ public class CallCommand implements CommandExecutor {
                 return false;
             }
             for (Mob entity : Attractor.getNearbyEntities(player.getLocation(), this.fileBuilder.getRadius())) {
+                Pathfinder.PathResult result = manager.buildPath(
+                        listener.getLastAvailableCar(group),
+                        entity,
+                        true
+                );
 
-                if (entity.isInsideVehicle()) continue;
+                if (result == null) {
+                    player.sendMessage("The path specified does not exist.");
+                    return false;
+                }
 
                 if (listener.getLastAvailableCar(group) == null) continue;
 

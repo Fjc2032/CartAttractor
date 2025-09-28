@@ -26,6 +26,7 @@ public class Reload implements CommandExecutor {
         }
         if (args.length == 0) {
             this.fileBuilder.reload();
+            sender.sendMessage("Success.");
             return true;
         }
         return true;
