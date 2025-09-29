@@ -25,6 +25,8 @@ public class Attractor implements Listener {
 
     private final FileBuilder fileBuilder;
 
+    private static Ejector ejector;
+
     private final boolean isEnabled;
 
     public Attractor(@NotNull CartAttractor plugin) {
@@ -32,6 +34,8 @@ public class Attractor implements Listener {
         this.pathManager = new PathManager(this.plugin);
         this.fileBuilder = this.plugin.getFileBuilder();
         this.isEnabled = this.fileBuilder.isEnabled();
+
+        ejector = CartAttractor.getEjector();
     }
 
     @EventHandler
@@ -110,6 +114,7 @@ public class Attractor implements Listener {
     public static List<? extends Mob> getNearbyEntities(Location location, int radius) {
         return location.getWorld().getNearbyEntities(location, radius, radius, radius).stream()
                 .filter(Mob.class::isInstance)
+                .filter(obj -> !ejector.exclusions().contains(obj.getUniqueId()))
                 .map(obj -> (Mob) obj)
                 .toList();
     }

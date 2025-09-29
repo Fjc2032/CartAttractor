@@ -8,11 +8,8 @@ public class FileBuilder {
 
     private final CartAttractor plugin;
 
-    private final FileConfiguration configuration;
-
     public FileBuilder(@NotNull CartAttractor plugin) {
         this.plugin = plugin;
-        this.configuration = this.plugin.getConfig();
     }
 
     public void build() {
@@ -20,9 +17,14 @@ public class FileBuilder {
     }
 
     public void loadDefaults() {
+        FileConfiguration configuration = this.plugin.getConfig();
+
         configuration.addDefault("isEnabled", true);
         configuration.addDefault("radius", 24);
-        configuration.addDefault("ejectChange", 0.14);
+        configuration.addDefault("ejectChange", 0.07);
+
+        configuration.options().copyDefaults(true);
+        this.plugin.saveConfig();
     }
 
     public void reload() {
@@ -30,16 +32,16 @@ public class FileBuilder {
     }
 
     public int getRadius() {
-        return this.configuration.getInt("radius", 24);
+        return this.plugin.getConfig().getInt("radius", 24);
     }
     public boolean isEnabled() {
-        return this.configuration.getBoolean("isEnabled", true);
+        return this.plugin.getConfig().getBoolean("isEnabled", true);
     }
     public double getEjectChance() {
-        return this.configuration.getDouble("ejectChance", 0.14);
+        return this.plugin.getConfig().getDouble("ejectChance", 0.07);
     }
 
     public FileConfiguration getConfiguration() {
-        return this.configuration;
+        return this.plugin.getConfig();
     }
 }

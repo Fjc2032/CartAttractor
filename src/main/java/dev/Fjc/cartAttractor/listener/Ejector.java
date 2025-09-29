@@ -12,7 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class Ejector implements Listener {
 
@@ -25,6 +28,8 @@ public class Ejector implements Listener {
     private final Random random = new Random();
 
     private Location offset;
+
+    private List<UUID> exclusions = new ArrayList<>();
 
     public Ejector(@NotNull CartAttractor plugin) {
         this.plugin = plugin;
@@ -50,8 +55,8 @@ public class Ejector implements Listener {
 
             if ((chance / 4) <= this.fileBuilder.getEjectChance()) {
                 for (Entity entity : member.getEntity().getPassengers()) {
-                    if (!(entity instanceof Mob livingEntity)) continue;
-                    setLocation(livingEntity);
+                    if (!(entity instanceof Mob mob)) continue;
+                    add(mob.getUniqueId());
                 }
             }
             if (chance <= this.fileBuilder.getEjectChance()) member.eject();
@@ -62,5 +67,17 @@ public class Ejector implements Listener {
     private void setLocation(Mob entity) {
         this.offset = new Location(entity.getWorld(), random.nextDouble(25000), random.nextDouble(100) + 10, random.nextDouble(25000), random.nextFloat(), random.nextFloat());
         entity.getPathfinder().moveTo(this.offset);
+    }
+
+    public List<? extends UUID> exclusions() {
+        return List.copyOf(this.exclusions);
+    }
+
+    public void add(UUID entity) {
+        this.exclusions.add(entity);
+    }
+
+    public void clear() {
+        this.exclusions.clear();
     }
 }
