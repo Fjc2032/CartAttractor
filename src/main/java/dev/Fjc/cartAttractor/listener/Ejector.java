@@ -53,7 +53,7 @@ public class Ejector implements Listener {
             if (member.getEntity().hasPlayerPassenger()) continue;
             if (!member.getEntity().hasPassenger()) continue;
 
-            if ((chance / 4) <= this.fileBuilder.getEjectChance()) {
+            if ((chance / 6) <= this.fileBuilder.getEjectChance()) {
                 for (Entity entity : member.getEntity().getPassengers()) {
                     if (!(entity instanceof Mob mob)) continue;
                     add(mob.getUniqueId());

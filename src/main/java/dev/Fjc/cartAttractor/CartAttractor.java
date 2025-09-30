@@ -2,10 +2,7 @@ package dev.Fjc.cartAttractor;
 
 import dev.Fjc.cartAttractor.builder.FileBuilder;
 import dev.Fjc.cartAttractor.builder.goals.DocileGoal;
-import dev.Fjc.cartAttractor.cmd.CallCommand;
-import dev.Fjc.cartAttractor.cmd.GetEjectCommand;
-import dev.Fjc.cartAttractor.cmd.NearbyMobsCommand;
-import dev.Fjc.cartAttractor.cmd.Reload;
+import dev.Fjc.cartAttractor.cmd.*;
 import dev.Fjc.cartAttractor.listener.Attractor;
 import dev.Fjc.cartAttractor.listener.Ejector;
 import org.bukkit.command.CommandExecutor;
@@ -62,6 +59,7 @@ public final class CartAttractor extends JavaPlugin {
         setExecutor("cartattractor-reload", new Reload(this));
         setExecutor("getnearbymobs", new NearbyMobsCommand(this));
         setExecutor("getejectchance", new GetEjectCommand(this));
+        setExecutor("flushexclusionlist", new FlushExclusionListCommand(this));
 
         logger.info("Everything is OK.");
     }

@@ -14,16 +14,13 @@ import java.util.List;
 
 public class NearbyMobsCommand implements CommandExecutor {
 
-    private CartAttractor plugin;
+    private final CartAttractor plugin;
 
-    private FileBuilder fileBuilder;
-
-    private Attractor event;
+    private final FileBuilder fileBuilder;
 
     public NearbyMobsCommand(@NotNull CartAttractor plugin) {
         this.plugin = plugin;
         this.fileBuilder = this.plugin.getFileBuilder();
-        this.event = new Attractor(this.plugin);
     }
 
     @Override

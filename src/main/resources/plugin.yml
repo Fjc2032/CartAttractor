@@ -19,4 +19,6 @@ commands:
     description: Gets mobs that are nearby (instances of PaperMC's Mob)
   getejectchance:
     description: Gets the eject chance defined in config.yml
+  flushexclusionlist:
+    description: Clears the exclusion list
 
